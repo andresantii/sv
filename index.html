@@ -6,8 +6,6 @@
     <title>Apri la lettera!💌</title>
     <link href="https://fonts.googleapis.com/css2?family=Short+Stack&display=swap" rel="stylesheet">
     
-    <link rel="preload" as="image" href="6D6864EB-A954-457E-9A1D-8486F6784819.jpg">
-
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
 
     <style>
@@ -23,23 +21,22 @@
             overflow-x: hidden;
         }
 
-        /* --- LIVELLO SFONDO COLLAGE (Ottimizzato Safari) --- */
+        /* --- LIVELLO SFONDO COLLAGE --- */
         #bg-collage {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            /* Usiamo le virgolette per il nome file */
-            background-image: linear-gradient(rgba(255, 255, 255, 0.45), rgba(255, 255, 255, 0.45)), url("./6D6864EB-A954-457E-9A1D-8486F6784819.jpg");
+            /* Percorso pulito senza ./ e senza virgolette strane */
+            background-image: linear-gradient(rgba(255, 255, 255, 0.45), rgba(255, 255, 255, 0.45)), url(6D6864EB-A954-457E-9A1D-8486F6784819.jpg);
             background-size: cover;
-            background-position: center center;
+            background-position: center;
             background-repeat: no-repeat;
             z-index: -1;
             opacity: 0;
             transition: opacity 0.8s ease-in-out;
-            /* Forza l'accelerazione hardware su iPhone */
-            transform: translateZ(0);
+            /* Ottimizzazione per rendering mobile */
             -webkit-transform: translateZ(0);
         }
 
