@@ -18,11 +18,21 @@
             background-color: #edc9c9;
             font-family: 'Short Stack', cursive;
             overflow-x: hidden;
-            /* Transizione fluida per lo sfondo */
-            transition: background 0.8s ease-in-out;
+        }
+
+        /* --- LIVELLO SFONDO COLLAGE --- */
+        #bg-collage {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            /* Inserisci qui il nome del tuo file immagine */
+            background-image: linear-gradient(rgba(255, 255, 255, 0.45), rgba(255, 255, 255, 0.45)), url('6D6864EB-A954-457E-9A1D-8486F6784819.jpg');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
+            z-index: -1; /* Sta dietro a tutto */
+            opacity: 0; /* Invisibile all'inizio */
+            transition: opacity 0.8s ease-in-out;
         }
 
         .container {
@@ -34,6 +44,8 @@
             width: 100%;
             padding: 20px;
             text-align: center;
+            position: relative;
+            z-index: 10;
         }
 
         /* --- GESTIONE PAGINE --- */
@@ -43,7 +55,6 @@
             max-width: 500px;
             animation: fadeIn 0.8s ease forwards;
         }
-
         .active { display: block; }
 
         @keyframes fadeIn {
@@ -67,17 +78,15 @@
             z-index: 5;
         }
         .envelope-wrapper.open .envelope-flap { transform: rotateX(180deg); }
-        
         .envelope-front::before, .envelope-front::after {
             content: ""; position: absolute; bottom: 0;
             border-top: 90px solid transparent; border-bottom: 90px solid #ffffff; z-index: 3;
         }
         .envelope-front::before { left: 0; border-left: 140px solid #ffffff; }
         .envelope-front::after { right: 0; border-right: 140px solid #ffffff; }
-        
         .seal-heart {
             position: absolute; top: 80px; left: 50%; transform: translateX(-50%) rotate(-45deg);
-            width: 25px; height: 25px; background-color: #ff3b3b; z-index: 6; transition: 0.3s;
+            width: 25px; height: 25px; background-color: #ff3b3b; z-index: 6;
         }
         .seal-heart:before, .seal-heart:after {
             content: ""; position: absolute; width: 25px; height: 25px; background-color: #ff3b3b; border-radius: 50%;
@@ -87,71 +96,32 @@
         .envelope-wrapper.open .seal-heart { opacity: 0; }
 
         /* --- TESTI E BOTTONI --- */
-        .message-text { 
-            font-size: 2.5em; 
-            color: #d63333; 
-            margin-bottom: 10px; 
-            text-shadow: 2px 2px 8px rgba(255, 255, 255, 0.8);
-        }
+        .message-text { font-size: 2.5em; color: #d63333; margin-bottom: 10px; text-shadow: 2px 2px 8px white; }
         .message-text-small { font-size: 1.4em; color: #d63333; margin-bottom: 20px; line-height: 1.4; }
-        .sub-text { 
-            font-size: 1.3em; 
-            color: #222; 
-            margin-bottom: 20px; 
-            text-shadow: 1px 1px 5px rgba(255, 255, 255, 0.9);
-        }
+        .sub-text { font-size: 1.3em; color: #222; margin-bottom: 20px; text-shadow: 1px 1px 5px white; }
 
-        .btn-next {
-            margin-top: 20px;
-            text-decoration: underline;
-            color: #d63333;
-            cursor: pointer;
-            font-size: 1.2em;
-            font-weight: bold;
-        }
+        .btn-next { margin-top: 20px; text-decoration: underline; color: #d63333; cursor: pointer; font-size: 1.2em; font-weight: bold; }
 
-        .options-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 60px;
-            margin-top: 30px;
-        }
-
+        .options-container { display: flex; flex-direction: column; align-items: center; gap: 60px; margin-top: 30px; }
         .option-box {
-            background: white;
-            padding: 15px 30px;
-            border: 3px solid #d63333;
-            border-radius: 15px;
-            color: #d63333;
-            font-size: 1.4em;
-            font-weight: bold;
-            cursor: pointer;
-            position: relative;
-            transition: 0.2s;
+            background: white; padding: 15px 30px; border: 3px solid #d63333; border-radius: 15px;
+            color: #d63333; font-size: 1.4em; font-weight: bold; cursor: pointer; position: relative;
         }
-
         #flee-btn { transition: transform 0.2s ease, scale 0.2s ease; }
-
         .final-img { width: 100%; max-width: 250px; border-radius: 15px; margin-bottom: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
 
         /* --- FRECCE --- */
         .arrow-wrapper { position: relative; display: inline-block; }
-        .hand-arrow {
-            position: absolute; fill: none; stroke: #ff3b3b; stroke-width: 5;
-            width: 25px; height: 40px;
-        }
+        .hand-arrow { position: absolute; fill: none; stroke: #ff3b3b; stroke-width: 5; width: 25px; height: 40px; }
         .arrow-1 { bottom: -50px; left: 0%; transform: rotate(180deg); animation: bounce 1s infinite alternate; }
         .arrow-2 { bottom: -60px; left: 45%; transform: rotate(180deg); animation: bounce 1.1s infinite alternate; }
         .arrow-3 { bottom: -50px; right: 0%; transform: rotate(180deg); animation: bounce 0.9s infinite alternate; }
-
-        @keyframes bounce {
-            from { transform: rotate(180deg) translateY(0); }
-            to { transform: rotate(180deg) translateY(10px); }
-        }
+        @keyframes bounce { from { transform: rotate(180deg) translateY(0); } to { transform: rotate(180deg) translateY(10px); } }
     </style>
 </head>
 <body>
+
+    <div id="bg-collage"></div>
 
     <div class="container">
         <div id="p1" class="page active">
@@ -169,12 +139,9 @@
         </div>
 
         <div id="p3" class="page">
-            <p class="message-text-small">
-                Andiamo a mangiare una barca di sashimi? (ho fame) 🍣
-            </p>
+            <p class="message-text-small">Andiamo a mangiare una barca di sashimi? (ho fame) 🍣</p>
             <div class="options-container">
                 <div class="option-box" id="flee-btn" onmouseover="flee(this)" ontouchstart="flee(this)" onclick="handleFleeClick()">SÌ</div>
-                
                 <div class="arrow-wrapper">
                     <svg class="hand-arrow arrow-1" viewBox="0 0 40 60"><path d="M20,5 Q15,25 20,45 M10,35 L20,55 L30,35" /></svg>
                     <svg class="hand-arrow arrow-2" viewBox="0 0 40 60"><path d="M20,5 Q15,25 20,45 M10,35 L20,55 L30,35" /></svg>
@@ -188,7 +155,6 @@
             <img src="Sushi.Cat.jpg" class="final-img">
             <p class="sub-text">Grande! Hai fatto la giusta scelta. 💸♥️🍣</p>
         </div>
-
         <div id="res2" class="page">
             <img src="Sushi.Cat.jpg" class="final-img">
             <p class="sub-text">Hai scelto di farmi pagare... ma ne varrà la pena!😌🍣</p>
@@ -205,19 +171,15 @@
         }
 
         function goToPage(num) {
-            // Rimuovi la classe active da tutte le pagine
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            // Mostra la pagina corrente
             document.getElementById('p' + num).classList.add('active');
 
-            // GESTIONE SFONDO DINAMICO
+            // GESTIONE SFONDO COLLAGE
+            const collage = document.getElementById('bg-collage');
             if (num === 2) {
-                // Sfondo collage con overlay bianco per leggibilità
-                document.body.style.backgroundImage = "linear-gradient(rgba(255, 255, 255, 0.45), rgba(255, 255, 255, 0.45)), url('6D6864EB-A954-457E-9A1D-8486F6784819.jpg')";
+                collage.style.opacity = "1"; // Mostra collage
             } else {
-                // Torna allo sfondo rosa unito
-                document.body.style.backgroundImage = "none";
-                document.body.style.backgroundColor = "#edc9c9";
+                collage.style.opacity = "0"; // Nascondi collage
             }
         }
 
@@ -235,27 +197,19 @@
             }
         }
 
-        function handleFleeClick() {
-            if (fleeCount >= 3) showFinal(2);
-        }
+        function handleFleeClick() { if (fleeCount >= 3) showFinal(2); }
 
         function showFinal(type) {
-            // Seleziona colori: Opzione 1 (Paga lei) = Oro/Rosso, Opzione 2 = Rosso/Bianco
             const colors = type === 1 ? ['#ff3b3b', '#FFD700'] : ['#ff3b3b', '#ffffff'];
             const end = Date.now() + 3000;
-
             (function frame() {
                 confetti({ particleCount: 3, angle: 60, spread: 55, origin: { x: 0, y: 0.8 }, colors: colors });
                 confetti({ particleCount: 3, angle: 120, spread: 55, origin: { x: 1, y: 0.8 }, colors: colors });
                 if (Date.now() < end) requestAnimationFrame(frame);
             }());
-
-            // Passa alla pagina finale corrispondente
+            document.getElementById('bg-collage').style.opacity = "0";
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.getElementById('res' + type).classList.add('active');
-            // Rimuovi sfondo collage se presente
-            document.body.style.backgroundImage = "none";
-            document.body.style.backgroundColor = "#edc9c9";
         }
     </script>
 </body>
