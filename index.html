@@ -3,9 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Apri la lettera! 💌</title>
+    <title>Apri la lettera!💌</title>
     <link href="https://fonts.googleapis.com/css2?family=Short+Stack&display=swap" rel="stylesheet">
     
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+
     <style>
         body, html {
             height: 100%;
@@ -105,13 +107,12 @@
             text-shadow: 1px 1px 5px rgba(255,255,255,0.9);
         }
 
-        /* Stile per l'immagine del gatto sushi */
         .final-img {
-            width: 300px; /* Imposta la larghezza che preferisci (es. 300px o 400px) */
-            max-width: 80%; /* Evita che esca dallo schermo sui telefoni piccoli */
+            width: 300px;
+            max-width: 80%;
             height: auto; 
             display: block;
-            margin: 0 auto 20px auto; /* Centra orizzontalmente e dà spazio al testo */
+            margin: 0 auto 20px auto;
             border-radius: 15px;
             box-shadow: 0 10px 20px rgba(0,0,0,0.1);
         }
@@ -131,7 +132,14 @@
             gap: 40px; 
             margin-top: 40px;
             width: 100%;
+            position: relative;
         }
+
+        .option-wrapper {
+            position: relative;
+            display: inline-block;
+        }
+
         .option-box {
             background: white; 
             padding: 18px 45px; 
@@ -143,11 +151,55 @@
             font-weight: bold;
             transition: 0.3s;
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            position: relative;
+            z-index: 5;
         }
         .option-box:hover {
             transform: scale(1.05);
             background: #d63333;
             color: white;
+        }
+
+        /* --- STILE TASTO CHE SCAPPA --- */
+        #flee-btn {
+            transition: transform 0.2s ease, scale 0.2s ease;
+        }
+
+        /* --- STILE FRECCE --- */
+        .hand-arrow {
+            position: absolute;
+            fill: none;
+            stroke: #ff3b3b;
+            stroke-width: 5;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.1));
+            width: 35px;
+            height: 50px;
+            z-index: 1;
+        }
+
+        .arrow-1 {
+            bottom: -80px; left: 10%;
+            --rot: 180deg; transform: rotate(180deg);
+            animation: bounceUp 1s infinite alternate;
+        }
+
+        .arrow-2 {
+            bottom: -80px; left: 45%;
+            --rot: 180deg; transform: rotate(180deg);
+            animation: bounceUp 1s infinite alternate;
+        }
+
+        .arrow-3 {
+            bottom: -80px; left: 80%;
+            --rot: 180deg; transform: rotate(180deg);
+            animation: bounceUp 1s infinite alternate;
+        }
+
+        @keyframes bounceUp {
+            0% { transform: rotate(var(--rot)) translateY(0); }
+            100% { transform: rotate(var(--rot)) translateY(15px); }
         }
 
         .fade-out { opacity: 0 !important; transition: opacity 0.5s ease; }
@@ -177,8 +229,23 @@
                 Andiamo? (ho fame)
             </h1>
             <div class="options-container">
-                <div class="option-box" onclick="showFinalPage('opzione1')">SÌ</div>
-                <div class="option-box" onclick="showFinalPage('opzione2')">SÌ, E PAGHI TU</div>
+                <div class="option-box" id="flee-btn" 
+                     onmouseover="flee(this)" 
+                     ontouchstart="flee(this)" 
+                     onclick="handleFleeClick()">SÌ</div>
+                
+                <div class="option-wrapper">
+                    <svg class="hand-arrow arrow-1" viewBox="0 0 40 60">
+                        <path d="M20,5 Q15,25 20,45 M10,35 L20,55 L30,35" />
+                    </svg>
+                    <svg class="hand-arrow arrow-2" viewBox="0 0 40 60">
+                        <path d="M20,5 Q15,25 20,45 M10,35 L20,55 L30,35" />
+                    </svg>
+                    <svg class="hand-arrow arrow-3" viewBox="0 0 40 60">
+                        <path d="M20,5 Q15,25 20,45 M10,35 L20,55 L30,35" />
+                    </svg>
+                    <div class="option-box" onclick="showFinalPage('opzione2')">SÌ, E PAGHI TU</div>
+                </div>
             </div>
         </div>
 
@@ -198,6 +265,33 @@
         const message = document.getElementById('loveMessage');
         const btnNext = document.getElementById('toPage3');
         const page3 = document.getElementById('page3');
+
+        // Logica per il tasto che scappa
+        let fleeCount = 0;
+        let fleeScale = 1;
+
+        function flee(btn) {
+            if (fleeCount < 3) {
+                const moveRange = 100;
+                const randomX = Math.floor(Math.random() * (moveRange * 2 + 1)) - moveRange;
+                const randomY = Math.floor(Math.random() * (moveRange * 2 + 1)) - moveRange;
+                
+                fleeScale -= 0.15; // Si rimpicciolisce ogni volta
+                btn.style.transform = `translate(${randomX}px, ${randomY}px)`;
+                btn.style.scale = fleeScale;
+                
+                fleeCount++;
+            } else {
+                // Al quarto tentativo non scappa più, ma resta piccolo
+                btn.style.transform = `translate(0, 0)`;
+            }
+        }
+
+        function handleFleeClick() {
+            if (fleeCount >= 3) {
+                showFinalPage('opzione1');
+            }
+        }
 
         letter.addEventListener('click', function() {
             letter.classList.add('open');
@@ -225,6 +319,37 @@
         });
 
         function showFinalPage(idScelta) {
+            var duration = 3 * 1000;
+            var end = Date.now() + duration;
+            
+            var coloriCoriandoli;
+            if (idScelta === 'opzione1') {
+                coloriCoriandoli = ['#ff3b3b', '#ff0000']; 
+            } else {
+                coloriCoriandoli = ['#ff3b3b', '#FFD700']; 
+            }
+
+            (function frame() {
+                confetti({
+                    particleCount: 3,
+                    angle: 60,
+                    spread: 55,
+                    origin: { x: 0, y: 0.8 },
+                    colors: coloriCoriandoli
+                });
+                confetti({
+                    particleCount: 3,
+                    angle: 120,
+                    spread: 55,
+                    origin: { x: 1, y: 0.8 },
+                    colors: coloriCoriandoli
+                });
+
+                if (Date.now() < end) {
+                    requestAnimationFrame(frame);
+                }
+            }());
+
             page3.classList.add('fade-out');
             setTimeout(() => {
                 page3.style.display = 'none';
