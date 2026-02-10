@@ -2,7 +2,7 @@
 <html lang="it">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Apri la lettera!💌</title>
     <link href="https://fonts.googleapis.com/css2?family=Short+Stack&display=swap" rel="stylesheet">
     
@@ -10,7 +10,7 @@
 
     <style>
         body, html {
-            height: 100%;
+            min-height: 100%;
             width: 100%;
             margin: 0;
             display: flex;
@@ -18,7 +18,7 @@
             align-items: center;
             background-color: #edc9c9;
             font-family: 'Short Stack', cursive;
-            overflow: hidden;
+            overflow-x: hidden;
             transition: background 1s ease-in-out;
             background-position: center;
             background-repeat: no-repeat;
@@ -28,17 +28,20 @@
         .container {
             position: relative;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             width: 100%;
-            height: 100%;
+            min-height: 100vh;
+            padding: 20px;
+            box-sizing: border-box;
             z-index: 10;
         }
 
-        /* --- BUSTA --- */
+        /* --- BUSTA (Scalata per Mobile) --- */
         .envelope-wrapper {
             position: relative;
-            width: 350px; height: 230px;
+            width: 320px; height: 210px;
             background-color: #ffffff;
             border: 1px solid #e0e0e0;
             box-shadow: 0 15px 35px rgba(0,0,0,0.1);
@@ -48,18 +51,18 @@
         }
         .envelope-flap {
             position: absolute; top: 0; left: 0; width: 0; height: 0;
-            border-left: 175px solid transparent; border-right: 175px solid transparent;
-            border-top: 125px solid #f9f9f9; z-index: 5;
+            border-left: 160px solid transparent; border-right: 160px solid transparent;
+            border-top: 115px solid #f9f9f9; z-index: 5;
             transform-origin: top; transition: transform 0.6s ease;
         }
         .envelope-front::before, .envelope-front::after {
             content: ""; position: absolute; bottom: 0;
-            border-top: 115px solid transparent; border-bottom: 115px solid #ffffff; z-index: 3;
+            border-top: 105px solid transparent; border-bottom: 105px solid #ffffff; z-index: 3;
         }
-        .envelope-front::before { left: 0; border-left: 175px solid #ffffff; }
-        .envelope-front::after { right: 0; border-right: 175px solid #ffffff; }
+        .envelope-front::before { left: 0; border-left: 160px solid #ffffff; }
+        .envelope-front::after { right: 0; border-right: 160px solid #ffffff; }
         .seal-heart {
-            position: absolute; top: 110px; left: 50%;
+            position: absolute; top: 100px; left: 50%;
             transform: translateX(-50%) rotate(-45deg);
             width: 30px; height: 30px; background-color: #ff3b3b; z-index: 6;
         }
@@ -74,7 +77,7 @@
         .envelope-wrapper.open .seal-heart { opacity: 0; }
         .envelope-wrapper.opened-fade { opacity: 0; pointer-events: none; }
 
-        /* --- TESTO E PAGINE --- */
+        /* --- TESTI --- */
         .message-content, #page3, #opzione1, #opzione2 {
             position: absolute;
             text-align: center;
@@ -84,122 +87,64 @@
             transition: opacity 1s ease;
         }
 
-        .message-text {
-            font-size: 4.5em;
-            color: #d63333;
-            margin: 0;
-            text-shadow: 2px 2px 10px rgba(255,255,255,1);
-        }
-
-        .message-text-small {
-            font-size: 2.2em;
-            color: #d63333;
-            margin: 0 auto;
-            width: 95%;
-            line-height: 1.4;
-        }
-
-        .sub-text {
-            font-size: 1.8em;
-            color: #222;
-            margin-top: 15px;
-            font-weight: bold;
-            text-shadow: 1px 1px 5px rgba(255,255,255,0.9);
-        }
-
-        .final-img {
-            width: 300px;
-            max-width: 80%;
-            height: auto; 
-            display: block;
-            margin: 0 auto 20px auto;
-            border-radius: 15px;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-        }
-
+        .message-text { font-size: 3.5em; color: #d63333; text-shadow: 2px 2px 10px white; }
+        .message-text-small { font-size: 1.8em; color: #d63333; line-height: 1.3; }
+        .sub-text { font-size: 1.4em; color: #222; font-weight: bold; }
+        
+        .final-img { width: 280px; border-radius: 15px; margin-bottom: 15px; }
         .show-message { opacity: 1 !important; visibility: visible !important; }
 
         #toPage3 {
-            position: absolute; bottom: 30px; cursor: pointer;
+            position: absolute; bottom: 40px; cursor: pointer;
             text-decoration: underline; color: #d63333; font-size: 1.2em;
-            opacity: 0; visibility: hidden; transition: 1s ease 2.5s;
+            opacity: 0; visibility: hidden; transition: 1s ease 2s;
         }
 
+        /* --- BOTTONI E LAYOUT RESPONSIVE --- */
         .options-container { 
             display: flex; 
             justify-content: center; 
             align-items: center;
-            gap: 40px; 
-            margin-top: 40px;
-            width: 100%;
+            gap: 30px; 
+            margin-top: 30px;
             position: relative;
-        }
-
-        .option-wrapper {
-            position: relative;
-            display: inline-block;
         }
 
         .option-box {
             background: white; 
-            padding: 18px 45px; 
+            padding: 15px 35px; 
             border: 3px solid #d63333; 
             border-radius: 15px; 
             cursor: pointer; 
             color: #d63333; 
-            font-size: 1.8em; 
+            font-size: 1.5em; 
             font-weight: bold;
-            transition: 0.3s;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            position: relative;
+            transition: 0.2s;
             z-index: 5;
         }
-        .option-box:hover {
-            transform: scale(1.05);
-            background: #d63333;
-            color: white;
+
+        #flee-btn { position: relative; transition: transform 0.2s ease, scale 0.2s ease; }
+
+        /* --- MOBILE ADAPTATION --- */
+        @media (max-width: 600px) {
+            .options-container { flex-direction: column; gap: 90px; }
+            .message-text { font-size: 2.2em; }
+            .message-text-small { font-size: 1.4em; }
+            #toPage3 { bottom: 20px; }
         }
 
-        /* --- STILE TASTO CHE SCAPPA --- */
-        #flee-btn {
-            transition: transform 0.2s ease, scale 0.2s ease;
-        }
-
-        /* --- STILE FRECCE --- */
+        /* --- FRECCE --- */
         .hand-arrow {
-            position: absolute;
-            fill: none;
-            stroke: #ff3b3b;
-            stroke-width: 5;
-            stroke-linecap: round;
-            stroke-linejoin: round;
-            filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.1));
-            width: 35px;
-            height: 50px;
-            z-index: 1;
+            position: absolute; fill: none; stroke: #ff3b3b; stroke-width: 5;
+            width: 30px; height: 45px; z-index: 1;
         }
-
-        .arrow-1 {
-            bottom: -80px; left: 10%;
-            --rot: 180deg; transform: rotate(180deg);
-            animation: bounceUp 1s infinite alternate;
-        }
-
-        .arrow-2 {
-            bottom: -80px; left: 45%;
-            --rot: 180deg; transform: rotate(180deg);
-            animation: bounceUp 1s infinite alternate;
-        }
-
-        .arrow-3 {
-            bottom: -80px; left: 80%;
-            --rot: 180deg; transform: rotate(180deg);
-            animation: bounceUp 1s infinite alternate;
-        }
+        .arrow-1 { bottom: -70px; left: 10%; --rot: 180deg; transform: rotate(180deg); animation: bounceUp 1s infinite alternate; }
+        .arrow-2 { bottom: -70px; left: 45%; --rot: 180deg; transform: rotate(180deg); animation: bounceUp 1s infinite alternate; }
+        .arrow-3 { bottom: -70px; left: 80%; --rot: 180deg; transform: rotate(180deg); animation: bounceUp 1s infinite alternate; }
 
         @keyframes bounceUp {
             0% { transform: rotate(var(--rot)) translateY(0); }
-            100% { transform: rotate(var(--rot)) translateY(15px); }
+            100% { transform: rotate(var(--rot)) translateY(10px); }
         }
 
         .fade-out { opacity: 0 !important; transition: opacity 0.5s ease; }
@@ -216,34 +161,22 @@
 
         <div class="message-content" id="loveMessage">
             <h1 class="message-text">Buon San Valentino Picciotta ♥️</h1>
-            <p class="sub-text">Ogni giorno con te è speciale.<br>Grazie di rendere la mia vita meravigliosa.</p>
+            <p class="sub-text">Ogni giorno con te è speciale.</p>
         </div>
 
         <div id="toPage3">Clicca qui per continuare...</div>
 
         <div id="page3">
             <h1 class="message-text-small">
-                C’è chi sogna un futuro radioso e chi sogna una barca di sashimi tutta per sé.<br>
-                Io sono una persona umile: mi basti tu...<br>
-                ...davanti a una barca di sashimi.<br>
-                Andiamo? (ho fame)
+                C’è chi sogna un futuro radioso e chi sogna una barca di sashimi...<br>Andiamo? (ho fame)
             </h1>
             <div class="options-container">
-                <div class="option-box" id="flee-btn" 
-                     onmouseover="flee(this)" 
-                     ontouchstart="flee(this)" 
-                     onclick="handleFleeClick()">SÌ</div>
+                <div class="option-box" id="flee-btn" onmouseover="flee(this)" ontouchstart="flee(this)" onclick="handleFleeClick()">SÌ</div>
                 
                 <div class="option-wrapper">
-                    <svg class="hand-arrow arrow-1" viewBox="0 0 40 60">
-                        <path d="M20,5 Q15,25 20,45 M10,35 L20,55 L30,35" />
-                    </svg>
-                    <svg class="hand-arrow arrow-2" viewBox="0 0 40 60">
-                        <path d="M20,5 Q15,25 20,45 M10,35 L20,55 L30,35" />
-                    </svg>
-                    <svg class="hand-arrow arrow-3" viewBox="0 0 40 60">
-                        <path d="M20,5 Q15,25 20,45 M10,35 L20,55 L30,35" />
-                    </svg>
+                    <svg class="hand-arrow arrow-1" viewBox="0 0 40 60"><path d="M20,5 Q15,25 20,45 M10,35 L20,55 L30,35" /></svg>
+                    <svg class="hand-arrow arrow-2" viewBox="0 0 40 60"><path d="M20,5 Q15,25 20,45 M10,35 L20,55 L30,35" /></svg>
+                    <svg class="hand-arrow arrow-3" viewBox="0 0 40 60"><path d="M20,5 Q15,25 20,45 M10,35 L20,55 L30,35" /></svg>
                     <div class="option-box" onclick="showFinalPage('opzione2')">SÌ, E PAGHI TU</div>
                 </div>
             </div>
@@ -266,31 +199,25 @@
         const btnNext = document.getElementById('toPage3');
         const page3 = document.getElementById('page3');
 
-        // Logica per il tasto che scappa
         let fleeCount = 0;
         let fleeScale = 1;
 
         function flee(btn) {
             if (fleeCount < 3) {
-                const moveRange = 100;
+                const moveRange = window.innerWidth < 600 ? 50 : 100;
                 const randomX = Math.floor(Math.random() * (moveRange * 2 + 1)) - moveRange;
                 const randomY = Math.floor(Math.random() * (moveRange * 2 + 1)) - moveRange;
-                
-                fleeScale -= 0.15; // Si rimpicciolisce ogni volta
+                fleeScale -= 0.15;
                 btn.style.transform = `translate(${randomX}px, ${randomY}px)`;
                 btn.style.scale = fleeScale;
-                
                 fleeCount++;
             } else {
-                // Al quarto tentativo non scappa più, ma resta piccolo
                 btn.style.transform = `translate(0, 0)`;
             }
         }
 
         function handleFleeClick() {
-            if (fleeCount >= 3) {
-                showFinalPage('opzione1');
-            }
+            if (fleeCount >= 3) showFinalPage('opzione1');
         }
 
         letter.addEventListener('click', function() {
@@ -309,55 +236,27 @@
             setTimeout(() => {
                 message.style.display = 'none';
                 btnNext.style.display = 'none';
-                document.body.style.backgroundImage = "none";
-                document.body.style.backgroundColor = "#edc9c9";
                 page3.style.display = 'block';
-                setTimeout(() => { 
-                    page3.classList.add('show-message'); 
-                }, 50);
+                setTimeout(() => { page3.classList.add('show-message'); }, 50);
             }, 500);
         });
 
         function showFinalPage(idScelta) {
-            var duration = 3 * 1000;
+            var duration = 3000;
             var end = Date.now() + duration;
-            
-            var coloriCoriandoli;
-            if (idScelta === 'opzione1') {
-                coloriCoriandoli = ['#ff3b3b', '#ff0000']; 
-            } else {
-                coloriCoriandoli = ['#ff3b3b', '#FFD700']; 
-            }
+            var colors = idScelta === 'opzione1' ? ['#ff3b3b', '#ff0000'] : ['#ff3b3b', '#FFD700'];
 
             (function frame() {
-                confetti({
-                    particleCount: 3,
-                    angle: 60,
-                    spread: 55,
-                    origin: { x: 0, y: 0.8 },
-                    colors: coloriCoriandoli
-                });
-                confetti({
-                    particleCount: 3,
-                    angle: 120,
-                    spread: 55,
-                    origin: { x: 1, y: 0.8 },
-                    colors: coloriCoriandoli
-                });
-
-                if (Date.now() < end) {
-                    requestAnimationFrame(frame);
-                }
+                confetti({ particleCount: 3, angle: 60, spread: 55, origin: { x: 0, y: 0.8 }, colors: colors });
+                confetti({ particleCount: 3, angle: 120, spread: 55, origin: { x: 1, y: 0.8 }, colors: colors });
+                if (Date.now() < end) requestAnimationFrame(frame);
             }());
 
             page3.classList.add('fade-out');
             setTimeout(() => {
                 page3.style.display = 'none';
-                const finalPage = document.getElementById(idScelta);
-                finalPage.style.display = 'block';
-                setTimeout(() => {
-                    finalPage.classList.add('show-message');
-                }, 50);
+                document.getElementById(idScelta).style.display = 'block';
+                setTimeout(() => { document.getElementById(idScelta).classList.add('show-message'); }, 50);
             }, 500);
         }
     </script>
