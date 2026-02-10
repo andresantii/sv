@@ -17,7 +17,12 @@
             padding: 0;
             background-color: #edc9c9;
             font-family: 'Short Stack', cursive;
-            overflow-x: hidden; /* Evita scorrimento laterale */
+            overflow-x: hidden;
+            /* Transizione fluida per lo sfondo */
+            transition: background 0.8s ease-in-out;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
         }
 
         .container {
@@ -31,22 +36,22 @@
             text-align: center;
         }
 
-        /* --- GESTIONE PAGINE (Senza Absolute che taglia) --- */
+        /* --- GESTIONE PAGINE --- */
         .page {
-            display: none; /* Nascondiamo tutto di base */
+            display: none;
             width: 100%;
             max-width: 500px;
             animation: fadeIn 0.8s ease forwards;
         }
 
-        .active { display: block; } /* Mostra solo la pagina attiva */
+        .active { display: block; }
 
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* --- BUSTA SCALATA --- */
+        /* --- BUSTA --- */
         .envelope-wrapper {
             position: relative;
             width: 280px; height: 180px;
@@ -82,9 +87,19 @@
         .envelope-wrapper.open .seal-heart { opacity: 0; }
 
         /* --- TESTI E BOTTONI --- */
-        .message-text { font-size: 2.5em; color: #d63333; margin-bottom: 10px; }
+        .message-text { 
+            font-size: 2.5em; 
+            color: #d63333; 
+            margin-bottom: 10px; 
+            text-shadow: 2px 2px 8px rgba(255, 255, 255, 0.8);
+        }
         .message-text-small { font-size: 1.4em; color: #d63333; margin-bottom: 20px; line-height: 1.4; }
-        .sub-text { font-size: 1.2em; color: #222; margin-bottom: 20px; }
+        .sub-text { 
+            font-size: 1.3em; 
+            color: #222; 
+            margin-bottom: 20px; 
+            text-shadow: 1px 1px 5px rgba(255, 255, 255, 0.9);
+        }
 
         .btn-next {
             margin-top: 20px;
@@ -92,13 +107,14 @@
             color: #d63333;
             cursor: pointer;
             font-size: 1.2em;
+            font-weight: bold;
         }
 
         .options-container {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 60px; /* Spazio per le frecce */
+            gap: 60px;
             margin-top: 30px;
         }
 
@@ -117,7 +133,7 @@
 
         #flee-btn { transition: transform 0.2s ease, scale 0.2s ease; }
 
-        .final-img { width: 100%; max-width: 250px; border-radius: 15px; margin-bottom: 15px; }
+        .final-img { width: 100%; max-width: 250px; border-radius: 15px; margin-bottom: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
 
         /* --- FRECCE --- */
         .arrow-wrapper { position: relative; display: inline-block; }
@@ -189,8 +205,20 @@
         }
 
         function goToPage(num) {
+            // Rimuovi la classe active da tutte le pagine
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            // Mostra la pagina corrente
             document.getElementById('p' + num).classList.add('active');
+
+            // GESTIONE SFONDO DINAMICO
+            if (num === 2) {
+                // Sfondo collage con overlay bianco per leggibilità
+                document.body.style.backgroundImage = "linear-gradient(rgba(255, 255, 255, 0.45), rgba(255, 255, 255, 0.45)), url('6D6864EB-A954-457E-9A1D-8486F6784819.jpg')";
+            } else {
+                // Torna allo sfondo rosa unito
+                document.body.style.backgroundImage = "none";
+                document.body.style.backgroundColor = "#edc9c9";
+            }
         }
 
         function flee(btn) {
@@ -212,6 +240,7 @@
         }
 
         function showFinal(type) {
+            // Seleziona colori: Opzione 1 (Paga lei) = Oro/Rosso, Opzione 2 = Rosso/Bianco
             const colors = type === 1 ? ['#ff3b3b', '#FFD700'] : ['#ff3b3b', '#ffffff'];
             const end = Date.now() + 3000;
 
@@ -221,8 +250,12 @@
                 if (Date.now() < end) requestAnimationFrame(frame);
             }());
 
+            // Passa alla pagina finale corrispondente
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.getElementById('res' + type).classList.add('active');
+            // Rimuovi sfondo collage se presente
+            document.body.style.backgroundImage = "none";
+            document.body.style.backgroundColor = "#edc9c9";
         }
     </script>
 </body>
