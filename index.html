@@ -17,7 +17,7 @@
             padding: 0;
             background-color: #edc9c9;
             font-family: 'Short Stack', cursive;
-            overflow-x: hidden; /* Evita scorrimento laterale */
+            overflow-x: hidden;
         }
 
         .container {
@@ -31,22 +31,21 @@
             text-align: center;
         }
 
-        /* --- GESTIONE PAGINE (Senza Absolute che taglia) --- */
         .page {
-            display: none; /* Nascondiamo tutto di base */
+            display: none;
             width: 100%;
             max-width: 500px;
             animation: fadeIn 0.8s ease forwards;
         }
 
-        .active { display: block; } /* Mostra solo la pagina attiva */
+        .active { display: block; }
 
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* --- BUSTA SCALATA --- */
+        /* --- BUSTA --- */
         .envelope-wrapper {
             position: relative;
             width: 280px; height: 180px;
@@ -83,7 +82,7 @@
 
         /* --- TESTI E BOTTONI --- */
         .message-text { font-size: 2.5em; color: #d63333; margin-bottom: 10px; }
-        .message-text-small { font-size: 1.4em; color: #d63333; margin-bottom: 20px; line-height: 1.4; }
+        .message-text-small { font-size: 1.3em; color: #d63333; margin-bottom: 15px; line-height: 1.5; padding: 0 10px; }
         .sub-text { font-size: 1.2em; color: #222; margin-bottom: 20px; }
 
         .btn-next {
@@ -98,8 +97,8 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 60px; /* Spazio per le frecce */
-            margin-top: 30px;
+            gap: 60px;
+            margin-top: 20px;
         }
 
         .option-box {
@@ -125,9 +124,9 @@
             position: absolute; fill: none; stroke: #ff3b3b; stroke-width: 5;
             width: 25px; height: 40px;
         }
-        .arrow-1 { bottom: -50px; left: 0%; transform: rotate(180deg); animation: bounce 1s infinite alternate; }
-        .arrow-2 { bottom: -60px; left: 45%; transform: rotate(180deg); animation: bounce 1.1s infinite alternate; }
-        .arrow-3 { bottom: -50px; right: 0%; transform: rotate(180deg); animation: bounce 0.9s infinite alternate; }
+        .arrow-1 { bottom: -75px; left: 0%; transform: rotate(180deg); animation: bounce 1s infinite alternate; }
+        .arrow-2 { bottom: -75px; left: 45%; transform: rotate(180deg); animation: bounce 1s infinite alternate; }
+        .arrow-3 { bottom: -75px; right: 0%; transform: rotate(180deg); animation: bounce 1s infinite alternate; }
 
         @keyframes bounce {
             from { transform: rotate(180deg) translateY(0); }
@@ -148,14 +147,17 @@
 
         <div id="p2" class="page">
             <h1 class="message-text">Buon San Valentino Picciotta ♥️</h1>
-            <p class="sub-text">Ogni giorno con te è speciale. Grazie di rendere la mia vita meravigliosa.</p>
+            <p class="sub-text">Ogni giorno con te è speciale.<br>Grazie di rendere la mia vita meravigliosa.</p>
             <div class="btn-next" onclick="goToPage(3)">Clicca qui per continuare...</div>
         </div>
 
         <div id="p3" class="page">
-            <p class="message-text-small">
-                Andiamo a mangiare una barca di sashimi? (ho fame) 🍣
-            </p>
+            <div class="message-text-small">
+                C’è chi sogna un futuro radioso e chi sogna una barca di sashimi tutta per sé.<br>
+                Io sono una persona umile: mi basti tu...<br>
+                ...davanti a una barca di sashimi.<br>
+                Andiamo? (ho fame)🍣
+            </div>
             <div class="options-container">
                 <div class="option-box" id="flee-btn" onmouseover="flee(this)" ontouchstart="flee(this)" onclick="handleFleeClick()">SÌ</div>
                 
