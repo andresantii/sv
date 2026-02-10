@@ -5,246 +5,215 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Apri la lettera!💌</title>
     <link href="https://fonts.googleapis.com/css2?family=Short+Stack&display=swap" rel="stylesheet">
-    
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
 
     <style>
+        * { box-sizing: border-box; }
+        
         body, html {
-            min-height: 100%;
+            height: 100%;
             width: 100%;
             margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            padding: 0;
             background-color: #edc9c9;
             font-family: 'Short Stack', cursive;
-            overflow-x: hidden;
-            transition: background 1s ease-in-out;
-            background-position: center;
-            background-repeat: no-repeat;
-            background-size: cover;
+            overflow-x: hidden; /* Evita scorrimento laterale */
         }
 
         .container {
-            position: relative;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            width: 100%;
             min-height: 100vh;
+            width: 100%;
             padding: 20px;
-            box-sizing: border-box;
-            z-index: 10;
+            text-align: center;
         }
 
-        /* --- BUSTA (Scalata per Mobile) --- */
+        /* --- GESTIONE PAGINE (Senza Absolute che taglia) --- */
+        .page {
+            display: none; /* Nascondiamo tutto di base */
+            width: 100%;
+            max-width: 500px;
+            animation: fadeIn 0.8s ease forwards;
+        }
+
+        .active { display: block; } /* Mostra solo la pagina attiva */
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- BUSTA SCALATA --- */
         .envelope-wrapper {
             position: relative;
-            width: 320px; height: 210px;
+            width: 280px; height: 180px;
             background-color: #ffffff;
-            border: 1px solid #e0e0e0;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            margin: 0 auto;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
             cursor: pointer;
-            transition: 0.4s;
-            z-index: 20;
         }
         .envelope-flap {
             position: absolute; top: 0; left: 0; width: 0; height: 0;
-            border-left: 160px solid transparent; border-right: 160px solid transparent;
-            border-top: 115px solid #f9f9f9; z-index: 5;
-            transform-origin: top; transition: transform 0.6s ease;
+            border-left: 140px solid transparent; border-right: 140px solid transparent;
+            border-top: 100px solid #f9f9f9; transform-origin: top; transition: 0.6s;
+            z-index: 5;
         }
+        .envelope-wrapper.open .envelope-flap { transform: rotateX(180deg); }
+        
         .envelope-front::before, .envelope-front::after {
             content: ""; position: absolute; bottom: 0;
-            border-top: 105px solid transparent; border-bottom: 105px solid #ffffff; z-index: 3;
+            border-top: 90px solid transparent; border-bottom: 90px solid #ffffff; z-index: 3;
         }
-        .envelope-front::before { left: 0; border-left: 160px solid #ffffff; }
-        .envelope-front::after { right: 0; border-right: 160px solid #ffffff; }
+        .envelope-front::before { left: 0; border-left: 140px solid #ffffff; }
+        .envelope-front::after { right: 0; border-right: 140px solid #ffffff; }
+        
         .seal-heart {
-            position: absolute; top: 100px; left: 50%;
-            transform: translateX(-50%) rotate(-45deg);
-            width: 30px; height: 30px; background-color: #ff3b3b; z-index: 6;
+            position: absolute; top: 80px; left: 50%; transform: translateX(-50%) rotate(-45deg);
+            width: 25px; height: 25px; background-color: #ff3b3b; z-index: 6; transition: 0.3s;
         }
         .seal-heart:before, .seal-heart:after {
-            content: ""; position: absolute; width: 30px; height: 30px;
-            background-color: #ff3b3b; border-radius: 50%;
+            content: ""; position: absolute; width: 25px; height: 25px; background-color: #ff3b3b; border-radius: 50%;
         }
-        .seal-heart:before { top: -15px; left: 0; }
-        .seal-heart:after { left: 15px; top: 0; }
-
-        .envelope-wrapper.open .envelope-flap { transform: rotateX(180deg); }
+        .seal-heart:before { top: -12px; left: 0; }
+        .seal-heart:after { left: 12px; top: 0; }
         .envelope-wrapper.open .seal-heart { opacity: 0; }
-        .envelope-wrapper.opened-fade { opacity: 0; pointer-events: none; }
 
-        /* --- TESTI --- */
-        .message-content, #page3, #opzione1, #opzione2 {
-            position: absolute;
-            text-align: center;
-            opacity: 0;
-            visibility: hidden;
-            width: 90%;
-            transition: opacity 1s ease;
+        /* --- TESTI E BOTTONI --- */
+        .message-text { font-size: 2.5em; color: #d63333; margin-bottom: 10px; }
+        .message-text-small { font-size: 1.4em; color: #d63333; margin-bottom: 20px; line-height: 1.4; }
+        .sub-text { font-size: 1.2em; color: #222; margin-bottom: 20px; }
+
+        .btn-next {
+            margin-top: 20px;
+            text-decoration: underline;
+            color: #d63333;
+            cursor: pointer;
+            font-size: 1.2em;
         }
 
-        .message-text { font-size: 3.5em; color: #d63333; text-shadow: 2px 2px 10px white; }
-        .message-text-small { font-size: 1.8em; color: #d63333; line-height: 1.3; }
-        .sub-text { font-size: 1.4em; color: #222; font-weight: bold; }
-        
-        .final-img { width: 280px; border-radius: 15px; margin-bottom: 15px; }
-        .show-message { opacity: 1 !important; visibility: visible !important; }
-
-        #toPage3 {
-            position: absolute; bottom: 40px; cursor: pointer;
-            text-decoration: underline; color: #d63333; font-size: 1.2em;
-            opacity: 0; visibility: hidden; transition: 1s ease 2s;
-        }
-
-        /* --- BOTTONI E LAYOUT RESPONSIVE --- */
-        .options-container { 
-            display: flex; 
-            justify-content: center; 
+        .options-container {
+            display: flex;
+            flex-direction: column;
             align-items: center;
-            gap: 30px; 
+            gap: 60px; /* Spazio per le frecce */
             margin-top: 30px;
-            position: relative;
         }
 
         .option-box {
-            background: white; 
-            padding: 15px 35px; 
-            border: 3px solid #d63333; 
-            border-radius: 15px; 
-            cursor: pointer; 
-            color: #d63333; 
-            font-size: 1.5em; 
+            background: white;
+            padding: 15px 30px;
+            border: 3px solid #d63333;
+            border-radius: 15px;
+            color: #d63333;
+            font-size: 1.4em;
             font-weight: bold;
+            cursor: pointer;
+            position: relative;
             transition: 0.2s;
-            z-index: 5;
         }
 
-        #flee-btn { position: relative; transition: transform 0.2s ease, scale 0.2s ease; }
+        #flee-btn { transition: transform 0.2s ease, scale 0.2s ease; }
 
-        /* --- MOBILE ADAPTATION --- */
-        @media (max-width: 600px) {
-            .options-container { flex-direction: column; gap: 90px; }
-            .message-text { font-size: 2.2em; }
-            .message-text-small { font-size: 1.4em; }
-            #toPage3 { bottom: 20px; }
-        }
+        .final-img { width: 100%; max-width: 250px; border-radius: 15px; margin-bottom: 15px; }
 
         /* --- FRECCE --- */
+        .arrow-wrapper { position: relative; display: inline-block; }
         .hand-arrow {
             position: absolute; fill: none; stroke: #ff3b3b; stroke-width: 5;
-            width: 30px; height: 45px; z-index: 1;
+            width: 25px; height: 40px;
         }
-        .arrow-1 { bottom: -70px; left: 10%; --rot: 180deg; transform: rotate(180deg); animation: bounceUp 1s infinite alternate; }
-        .arrow-2 { bottom: -70px; left: 45%; --rot: 180deg; transform: rotate(180deg); animation: bounceUp 1s infinite alternate; }
-        .arrow-3 { bottom: -70px; left: 80%; --rot: 180deg; transform: rotate(180deg); animation: bounceUp 1s infinite alternate; }
+        .arrow-1 { bottom: -50px; left: 0%; transform: rotate(180deg); animation: bounce 1s infinite alternate; }
+        .arrow-2 { bottom: -60px; left: 45%; transform: rotate(180deg); animation: bounce 1.1s infinite alternate; }
+        .arrow-3 { bottom: -50px; right: 0%; transform: rotate(180deg); animation: bounce 0.9s infinite alternate; }
 
-        @keyframes bounceUp {
-            0% { transform: rotate(var(--rot)) translateY(0); }
-            100% { transform: rotate(var(--rot)) translateY(10px); }
+        @keyframes bounce {
+            from { transform: rotate(180deg) translateY(0); }
+            to { transform: rotate(180deg) translateY(10px); }
         }
-
-        .fade-out { opacity: 0 !important; transition: opacity 0.5s ease; }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <div class="envelope-wrapper" id="letter">
-            <div class="envelope-flap"></div>
-            <div class="envelope-front"></div>
-            <div class="seal-heart"></div>
+        <div id="p1" class="page active">
+            <div class="envelope-wrapper" id="letter" onclick="openLetter()">
+                <div class="envelope-flap"></div>
+                <div class="envelope-front"></div>
+                <div class="seal-heart"></div>
+            </div>
         </div>
 
-        <div class="message-content" id="loveMessage">
+        <div id="p2" class="page">
             <h1 class="message-text">Buon San Valentino Picciotta ♥️</h1>
-            <p class="sub-text">Ogni giorno con te è speciale.</p>
+            <p class="sub-text">Ogni giorno con te è speciale. Grazie di rendere la mia vita meravigliosa.</p>
+            <div class="btn-next" onclick="goToPage(3)">Clicca qui per continuare...</div>
         </div>
 
-        <div id="toPage3">Clicca qui per continuare...</div>
-
-        <div id="page3">
-            <h1 class="message-text-small">
-                C’è chi sogna un futuro radioso e chi sogna una barca di sashimi...<br>Andiamo? (ho fame)
-            </h1>
+        <div id="p3" class="page">
+            <p class="message-text-small">
+                Andiamo a mangiare una barca di sashimi? (ho fame) 🍣
+            </p>
             <div class="options-container">
                 <div class="option-box" id="flee-btn" onmouseover="flee(this)" ontouchstart="flee(this)" onclick="handleFleeClick()">SÌ</div>
                 
-                <div class="option-wrapper">
+                <div class="arrow-wrapper">
                     <svg class="hand-arrow arrow-1" viewBox="0 0 40 60"><path d="M20,5 Q15,25 20,45 M10,35 L20,55 L30,35" /></svg>
                     <svg class="hand-arrow arrow-2" viewBox="0 0 40 60"><path d="M20,5 Q15,25 20,45 M10,35 L20,55 L30,35" /></svg>
                     <svg class="hand-arrow arrow-3" viewBox="0 0 40 60"><path d="M20,5 Q15,25 20,45 M10,35 L20,55 L30,35" /></svg>
-                    <div class="option-box" onclick="showFinalPage('opzione2')">SÌ, E PAGHI TU</div>
+                    <div class="option-box" onclick="showFinal(1)">SÌ, E PAGHI TU</div>
                 </div>
             </div>
         </div>
 
-        <div id="opzione1">
-            <img src="Sushi.Cat.jpg" alt="Sushi Cat" class="final-img">
-            <p class="sub-text">Hai scelto di farmi pagare... ma ne varrà la pena!😌🍣</p>
+        <div id="res1" class="page">
+            <img src="Sushi.Cat.jpg" class="final-img">
+            <p class="sub-text">Grande! Hai fatto la giusta scelta. 💸♥️🍣</p>
         </div>
 
-        <div id="opzione2">
-            <img src="Sushi.Cat.jpg" alt="Sushi Cat" class="final-img">
-            <p class="sub-text">Grande! Hai fatto la giusta scelta. 💸♥️🍣</p>
+        <div id="res2" class="page">
+            <img src="Sushi.Cat.jpg" class="final-img">
+            <p class="sub-text">Hai scelto di farmi pagare... ma ne varrà la pena!😌🍣</p>
         </div>
     </div>
 
     <script>
-        const letter = document.getElementById('letter');
-        const message = document.getElementById('loveMessage');
-        const btnNext = document.getElementById('toPage3');
-        const page3 = document.getElementById('page3');
-
         let fleeCount = 0;
         let fleeScale = 1;
 
+        function openLetter() {
+            document.getElementById('letter').classList.add('open');
+            setTimeout(() => { goToPage(2); }, 1000);
+        }
+
+        function goToPage(num) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById('p' + num).classList.add('active');
+        }
+
         function flee(btn) {
             if (fleeCount < 3) {
-                const moveRange = window.innerWidth < 600 ? 50 : 100;
-                const randomX = Math.floor(Math.random() * (moveRange * 2 + 1)) - moveRange;
-                const randomY = Math.floor(Math.random() * (moveRange * 2 + 1)) - moveRange;
+                const moveRange = 60;
+                const x = Math.random() * moveRange * (Math.random() < 0.5 ? -1 : 1);
+                const y = Math.random() * moveRange * (Math.random() < 0.5 ? -1 : 1);
                 fleeScale -= 0.15;
-                btn.style.transform = `translate(${randomX}px, ${randomY}px)`;
+                btn.style.transform = `translate(${x}px, ${y}px)`;
                 btn.style.scale = fleeScale;
                 fleeCount++;
             } else {
-                btn.style.transform = `translate(0, 0)`;
+                btn.style.transform = `translate(0,0)`;
             }
         }
 
         function handleFleeClick() {
-            if (fleeCount >= 3) showFinalPage('opzione1');
+            if (fleeCount >= 3) showFinal(2);
         }
 
-        letter.addEventListener('click', function() {
-            letter.classList.add('open');
-            setTimeout(() => {
-                letter.classList.add('opened-fade');
-                document.body.style.backgroundImage = "linear-gradient(rgba(255, 255, 255, 0.45), rgba(255, 255, 255, 0.45)), url('6D6864EB-A954-457E-9A1D-8486F6784819.jpg')";
-                message.classList.add('show-message');
-                btnNext.classList.add('show-message');
-            }, 800);
-        });
-
-        btnNext.addEventListener('click', function() {
-            message.classList.add('fade-out');
-            btnNext.classList.add('fade-out');
-            setTimeout(() => {
-                message.style.display = 'none';
-                btnNext.style.display = 'none';
-                page3.style.display = 'block';
-                setTimeout(() => { page3.classList.add('show-message'); }, 50);
-            }, 500);
-        });
-
-        function showFinalPage(idScelta) {
-            var duration = 3000;
-            var end = Date.now() + duration;
-            var colors = idScelta === 'opzione1' ? ['#ff3b3b', '#ff0000'] : ['#ff3b3b', '#FFD700'];
+        function showFinal(type) {
+            const colors = type === 1 ? ['#ff3b3b', '#FFD700'] : ['#ff3b3b', '#ffffff'];
+            const end = Date.now() + 3000;
 
             (function frame() {
                 confetti({ particleCount: 3, angle: 60, spread: 55, origin: { x: 0, y: 0.8 }, colors: colors });
@@ -252,12 +221,8 @@
                 if (Date.now() < end) requestAnimationFrame(frame);
             }());
 
-            page3.classList.add('fade-out');
-            setTimeout(() => {
-                page3.style.display = 'none';
-                document.getElementById(idScelta).style.display = 'block';
-                setTimeout(() => { document.getElementById(idScelta).classList.add('show-message'); }, 50);
-            }, 500);
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById('res' + type).classList.add('active');
         }
     </script>
 </body>
